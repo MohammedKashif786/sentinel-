@@ -1,0 +1,11 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+networkx
+pydantic
+streamlit
+shap
+torch
+torch_geometric
+ollama   # optional: only for the LLM policy parser

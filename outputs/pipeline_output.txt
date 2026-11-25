@@ -1,0 +1,38 @@
+
+=== DETECTION QUALITY (test period, windows after 1500) ===
+                          Method  Precision  Recall    F1  ROC-AUC
+Fixed threshold (conn_freq > 60)      0.991   0.909 0.948    1.000
+                Isolation Forest      0.850   1.000 0.919    1.000
+                       LSTM only      0.975   0.967 0.971    0.999
+                        GNN only      0.958   1.000 0.978    1.000
+     LSTM + GNN fused (proposed)      0.986   0.992 0.989    1.000
+
+Policy: "Isolate any endpoint whose risk exceeds 90."
+  parsed by rule-based fallback: {'metric': 'risk', 'operator': '>', 'value': 90.0, 'window_minutes': None, 'action': 'ISOLATE'}
+  admin confirmation: APPROVED
+
+Policy: "If a device communicates with more than 15 new external destinations within five minutes, classify it as high risk."
+  parsed by rule-based fallback: {'metric': 'new_destinations', 'operator': '>', 'value': 15.0, 'window_minutes': 5.0, 'action': 'HIGH_RISK'}
+  admin confirmation: APPROVED
+
+=== RESPONSE LOG (test period) ===
+t=1809 ( 301.5 min)  h3  risk= 32  MONITORED
+t=1826 ( 304.3 min)  h3  risk= 65  RESTRICTED   reasons: Rapid increase in outbound traffic; Connection rate far above normal; Rapid increase in outbound packets; Many new destinations
+t=1836 ( 306.0 min)  h3  risk= 85  ISOLATED   reasons: Rapid increase in outbound traffic; Connection rate far above normal; Rapid increase in outbound packets; Unusual inbound packets
+t=1991 ( 331.8 min)  h3  risk= 70  -> Restricted
+t=2020 ( 336.7 min)  h3  risk=  5  -> Monitored
+t=2026 ( 337.7 min)  h3  risk=  4  -> Normal
+t=2415 ( 402.5 min)  h4  risk= 34  MONITORED
+t=2428 ( 404.7 min)  h4  risk= 61  RESTRICTED   reasons: Connection rate far above normal; Rapid increase in outbound traffic; Many new destinations; Unusual inbound traffic
+t=2438 ( 406.3 min)  h4  risk= 82  ISOLATED   reasons: Rapid increase in outbound traffic; Connection rate far above normal; Rapid increase in outbound packets; Unusual inbound packets
+t=2613 ( 435.5 min)  h4  risk= 52  -> Restricted
+t=2640 ( 440.0 min)  h4  risk=  7  -> Monitored
+t=2646 ( 441.0 min)  h4  risk=  4  -> Normal
+
+=== h4 DEMO (attack starts at window 2400) ===
+Peak risk 98/100 at window 2574  (LSTM 94%, GNN 100%, auth 100%, traffic 100%)
+First alert (Monitored): 150 s after attack began | ISOLATE: 380 s after
+Other hosts during h4 attack: max risk 15, max level Normal
+Status path for h4: Normal -> Monitored -> Restricted -> Isolated -> Restricted -> Monitored -> Normal
+
+Saved: outputs/results.csv, outputs/risk_timeline.png, outputs/model_scores_h4.png
