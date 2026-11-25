@@ -1,5 +1,10 @@
 # ML-Driven Adaptive Endpoint Security (LSTM + GNN + NLP policies)
 
+## Browser simulator preview
+Open the latest SentinelML browser preview: https://sentinelml-visual-redesign-sentinelml-updated-e881664f5b9a9813.v0.build
+
+This is the v0 workspace preview, not a production deployment. The link is available while the preview service is running; for a permanent public URL, deploy the project to Vercel.
+
 ## Path A - runs on Windows directly (no Mininet needed)
 Uses a Python simulator that produces the same telemetry format as the Mininet lab.
 

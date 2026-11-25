@@ -7,7 +7,9 @@ SentinelML is an educational adaptive endpoint-security simulator. It demonstrat
 
 Opening the browser simulator
 -----------------------------
-The standalone browser experience is in sentinelml-site/index.html. It can be served as static files; in this workspace the preview is served from sentinelml-site on port 4174. The left navigation switches between the simulation and model/data/policy explanations without leaving the page.
+Latest v0 workspace preview: https://sentinelml-visual-redesign-sentinelml-updated-e881664f5b9a9813.v0.build
+
+This is a workspace preview rather than a production deployment. It is available while the preview service is running; deploy the project to Vercel for a permanent public URL. The standalone browser experience is in sentinelml-site/index.html. In this workspace it is served from sentinelml-site on port 4174. The left navigation switches between the simulation and model/data/policy explanations without leaving the page.
 
 Simulation view
 ---------------
