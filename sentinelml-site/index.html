@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SentinelML – Adaptive Endpoint Security Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f1eefc;--card:#fff;--ink:#1b1740;--mut:#6a6890;--line:#e2defa;--soft:#f5f2ff;--ok:#16a34a;--mon:#c98e00;--res:#ea6a0c;--iso:#dc2626;--lstm:#8b5cf6;--gnn:#0891b2;--fus:#f59e0b;--pol:#3b82f6;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0c24;--card:#191640;--ink:#ece9ff;--mut:#a5a2cf;--line:#2d2961;--soft:#221f4d;--ok:#4ade80;--mon:#facc15;--res:#fb923c;--iso:#f87171;--lstm:#a78bfa;--gnn:#22d3ee;--fus:#fbbf24;--pol:#60a5fa;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e0c24;--card:#191640;--ink:#ece9ff;--mut:#a5a2cf;--line:#2d2961;--soft:#221f4d;--ok:#4ade80;--mon:#facc15;--res:#fb923c;--iso:#f87171;--lstm:#a78bfa;--gnn:#22d3ee;--fus:#fbbf24;--pol:#60a5fa;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Plus Jakarta Sans",system-ui,sans-serif}
+h1,h2,.brand b{font-family:Sora,"Plus Jakarta Sans",system-ui,sans-serif}
+.app{display:grid;grid-template-columns:236px 1fr;min-height:100%}
+nav{position:sticky;top:0;align-self:start;height:100vh;padding:20px 14px;background:linear-gradient(170deg,#2a1b6e,#4b2fa8 55%,#0e7490);color:#fff;display:flex;flex-direction:column;gap:6px}
+.brand{font-size:21px;margin-bottom:14px}.brand b{font-weight:700}.brand span{color:#67e8f9}.brand small{display:block;font:400 11px "Plus Jakarta Sans";opacity:.75}
+nav a{color:#fff;text-decoration:none;padding:10px 12px;border-radius:10px;display:flex;gap:10px;align-items:center;opacity:.82;border-left:4px solid transparent}
+nav a i{width:10px;height:10px;border-radius:50%;background:var(--c)}nav a:hover{background:#ffffff1f;opacity:1}
+nav a.on{background:#ffffff2e;opacity:1;border-left-color:var(--c);font-weight:700}
+.side{margin-top:auto;background:#00000033;border-radius:12px;padding:10px 12px;font-size:12px}.side b{font-size:15px}
+main{padding:22px 24px 40px;min-width:0}
+@media(max-width:860px){.app{grid-template-columns:1fr}nav{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:10px}.brand,.side{display:none}nav a{white-space:nowrap;border-left:0}}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}.sub{color:var(--mut);margin:0 0 14px;max-width:80ch}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--c,var(--lstm));border-radius:12px;padding:12px 14px;box-shadow:0 4px 14px #4b2fa814;min-width:0}
+.g2{display:grid;gap:12px;grid-template-columns:1.3fr 1fr;margin-bottom:12px}@media(max-width:1000px){.g2{grid-template-columns:1fr}}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+button,select{font:inherit;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:6px 12px;cursor:pointer}
+button.p{background:linear-gradient(90deg,#6d5dfc,#0891b2);color:#fff;border:0}button.d{background:var(--iso);color:#fff;border:0}
+:focus-visible{outline:2px solid var(--pol);outline-offset:2px}input[type=range]{accent-color:#6d5dfc;vertical-align:middle}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}@media(max-width:700px){.flow{grid-template-columns:repeat(2,1fr)}}
+.st{border-radius:10px;padding:8px 10px;color:#fff}.st b{display:block;font-size:11px;font-weight:500;opacity:.9}.st span{font:700 20px Sora,sans-serif}
+svg{width:100%;height:auto;display:block}.lk{stroke:var(--line);stroke-width:2;fill:none}.pr{stroke-dasharray:2 5}
+.fl{fill:none;stroke-width:3;stroke-dasharray:3 9;animation:mv 1s linear infinite}@keyframes mv{to{stroke-dashoffset:-12}}
+.ex{fill:none;stroke:var(--iso);stroke-width:2;stroke-dasharray:6 4;opacity:0}.node{transition:fill .3s}.ring{fill:none;stroke:var(--iso);stroke-width:3;opacity:0;animation:pu 1.2s ease-in-out infinite}
+@keyframes pu{50%{stroke-width:7;stroke-opacity:.4}}@media(prefers-reduced-motion:reduce){.fl,.ring,.cell{animation:none}}
+.nd{cursor:pointer}.bd{font-size:11px;fill:var(--ink);text-anchor:middle}
+table{width:100%;border-collapse:collapse}td,th{padding:5px 4px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}th{color:var(--mut);font-size:12px}
+tr.row{cursor:pointer}tr.sel td{background:var(--soft)}.rb{height:8px;border-radius:4px;background:var(--soft);overflow:hidden;min-width:60px}.rb i{display:block;height:100%}
+.pill{padding:1px 9px;border-radius:10px;font-size:12px;border:1px solid currentColor;white-space:nowrap}
+canvas{width:100%;height:200px;display:block}.log{max-height:200px;overflow:auto;font-size:13px}.log div{padding:3px 0;border-bottom:1px solid var(--line)}
+.row2{display:flex;gap:6px;align-items:center;overflow-x:auto;padding:6px 0}.row2 i{color:var(--mut);font-style:normal}
+.cell{flex:none;min-width:58px;text-align:center;border:2px solid var(--lstm);border-radius:10px;padding:4px;animation:gl 3.6s infinite}.cell small{display:block;font-size:10px;color:var(--mut)}.cell b{font-family:Sora,sans-serif}
+.enc{border-color:var(--fus)}.dec{border-color:var(--ok)}@keyframes gl{0%,30%{background:var(--lstm);color:#fff}45%,100%{background:transparent}}
+.big{font:700 34px Sora,sans-serif}.chip{display:inline-block;padding:2px 9px;border-radius:12px;background:var(--soft);margin:2px;font-size:12px}
+.step{display:flex;gap:10px;margin:9px 0}.step>b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gnn);color:#fff;text-align:center;line-height:26px}
+pre{margin:8px 0;padding:8px;background:var(--soft);border-radius:8px;overflow:auto;font-size:12px}input[type=text]{font:inherit;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+.fr{display:grid;grid-template-columns:130px 1fr 140px;gap:10px;align-items:center;margin:8px 0}@media(max-width:600px){.fr{grid-template-columns:90px 1fr}.fr span:last-child{grid-column:1/-1}}
+.note{color:var(--mut);font-size:12px;margin-top:16px;max-width:90ch}
+</style></head><body><div class="app">
+<nav><div class="brand"><b>Sentinel<span>ML</span></b><small>Adaptive endpoint security</small></div>
+<a href="#sim" data-v="sim" style="--c:#fbbf24"><i></i>Live simulation</a><a href="#data" data-v="data" style="--c:#86efac"><i></i>Data &amp; preprocessing</a><a href="#train" data-v="train" style="--c:#f9a8d4"><i></i>How it was trained</a><a href="#lstm" data-v="lstm" style="--c:#c4b5fd"><i></i>How the LSTM works</a><a href="#gnn" data-v="gnn" style="--c:#67e8f9"><i></i>How the GNN works</a><a href="#fusion" data-v="fusion" style="--c:#fb923c"><i></i>Risk fusion</a><a href="#policy" data-v="policy" style="--c:#93c5fd"><i></i>Admin policy</a>
+<div class="side" id="side"></div></nav>
+<main>
+<section class="view" id="v-sim"><h1>Live simulation</h1><p class="sub">Choose how many endpoints you want, click any node, and attack it. Several nodes can be attacked at once.</p>
+<div class="card bar" style="--c:#6d5dfc"><label>Endpoints <input type="range" id="nn" min="3" max="12" value="6"> <b id="nv">6</b></label>
+<span>Selected: <b id="sn"></b></span><button class="d" id="bAtt">Attack selected</button><button id="bOne">Stop selected</button><button id="bStop">Stop all</button><button class="p" id="bDemo">Run demo</button><button id="bPause">Pause</button><button id="bReset">Reset</button>
+<label>Speed <select id="spd"><option value="500">1×</option><option value="250" selected>2×</option><option value="110">4×</option></select></label><span class="sub" id="clock" style="margin:0 0 0 auto"></span></div>
+<div class="flow" id="flow"></div>
+<div class="g2"><div class="card" style="--c:#0891b2"><h2>Network (click a node)</h2><svg id="net" viewBox="0 0 800 450"></svg><div class="sub" style="font-size:12px;margin:0">Link colour = response (green normal, amber monitored, orange restricted, red isolated). Red dashed curves = unusual connections to other devices.</div></div>
+<div class="card" style="--c:#f59e0b"><h2>Endpoints</h2><table><thead><tr><th>Device</th><th>Risk</th><th></th><th>Status</th></tr></thead><tbody id="tb"></tbody></table><h2 style="margin-top:12px">Why is <span id="wn"></span> flagged?</h2><ul id="why"></ul></div></div>
+<div class="g2"><div class="card" style="--c:#8b5cf6"><h2>Risk over time</h2><canvas id="cv"></canvas></div><div class="card" style="--c:#dc2626"><h2>Response log</h2><div class="log" id="log"></div></div></div></section>
+
+<section class="view" id="v-data"><h1>Data &amp; preprocessing</h1><p class="sub">Raw telemetry cannot be fed to the models directly. Every window goes through the same steps, shown here live for the node you pick: <select id="ds"></select></p>
+<div class="card" style="--c:#16a34a;margin-bottom:12px"><h2>The dataset (simulated network telemetry)</h2><div><span class="chip">5 hosts × 3,000 windows = 15,000 rows</span><span class="chip">1 window = 10 seconds</span><span class="chip">10 features per window</span><span class="chip">≈29,000 who-talks-to-whom records</span><span class="chip">3 injected attack episodes (h2, h3, h4)</span><span class="chip">every window labelled 0 / 1</span><span class="chip">train: windows before 1,500 · test: after</span></div></div>
+<div class="card" style="--c:#22c55e;margin-bottom:12px;overflow-x:auto"><h2>Steps 1–4 on the live values of the selected node</h2><table id="dt"></table></div>
+<div class="g2"><div class="card" style="--c:#0891b2"><h2>Step 5 · Sliding window: the last 12 z-scores become one LSTM input</h2><div class="row2" id="dw" style="flex-wrap:wrap"></div><div class="sub" style="font-size:12px;margin:0">Red = above this device’s normal, blue = below. Step 6 builds one graph per window (nodes = devices, edges = who talked to whom) for the GNN.</div></div>
+<div class="card" style="--c:#f59e0b;overflow-x:auto"><h2>Why per-device? The same raw value means different things</h2><table id="dp"></table></div></div></section>
+
+<section class="view" id="v-train"><h1>How the models were trained</h1><p class="sub">The curves and numbers on this page come from the real PyTorch training run on the simulated dataset.</p>
+<div class="g2"><div class="card" style="--c:#8b5cf6"><h2>LSTM autoencoder: loss per epoch</h2><div id="tl"></div></div><div class="card" style="--c:#0891b2"><h2>GNN (GraphSAGE): loss per epoch, log scale</h2><div id="tg"></div></div></div>
+<div class="g2"><div class="card" style="--c:#f59e0b"><h2>Training recipe</h2><div class="step"><b>1</b><div><b>Split by time.</b> Windows before 1,500 train, later windows test. The h3 and h4 attacks are never seen in training.</div></div><div class="step"><b>2</b><div><b>Learn “normal” per device</b> from normal training windows only.</div></div><div class="step"><b>3</b><div><b>LSTM autoencoder:</b> 7,263 normal sequences, rebuilds its input, MSE loss, Adam lr 0.001, batch 128, 25 epochs.</div></div><div class="step"><b>4</b><div><b>Risk scale:</b> the 99th percentile of normal errors maps to a low risk, bigger errors approach 100.</div></div><div class="step"><b>5</b><div><b>GNN:</b> 1,500 graph snapshots, 2 GraphSAGE layers, cross-entropy with attack class weighted ×8, Adam lr 0.005, 30 epochs.</div></div><div class="step"><b>6</b><div><b>Evaluate</b> on the later windows against a fixed threshold and Isolation Forest.</div></div></div>
+<div class="card" style="--c:#16a34a;overflow-x:auto"><h2>Test results (windows after 1,500)</h2><table><tr><th>Method</th><th>Precision</th><th>Recall</th><th>F1</th></tr><tr><td>Fixed threshold</td><td>0.991</td><td>0.909</td><td>0.948</td></tr><tr><td>Isolation Forest</td><td>0.850</td><td>1.000</td><td>0.919</td></tr><tr><td>LSTM only</td><td>0.975</td><td>0.967</td><td>0.971</td></tr><tr><td>GNN only</td><td>0.958</td><td>1.000</td><td>0.978</td></tr><tr class="sel"><td><b>LSTM + GNN fused</b></td><td><b>0.986</b></td><td><b>0.992</b></td><td><b>0.989</b></td></tr></table><div class="sub" style="font-size:12px;margin:8px 0 0">Fused model: 7,133 true normal, 5 false alarms, 3 missed, 359 attack windows caught. The data is simulated and the attacks are fairly obvious, so these scores are optimistic. The LSTM loss was still falling slowly at epoch 25.</div></div></div></section>
+
+<section class="view" id="v-lstm"><h1>How the LSTM works</h1><p class="sub">The LSTM is an autoencoder trained only on normal behaviour. It reads the last 12 time windows of a device, rebuilds what it expects, and the gap between expected and actual becomes the temporal risk. Pick a node: <select id="ls"></select></p>
+<div class="card" style="--c:#8b5cf6;margin-bottom:12px"><h2>1 · Input: last 12 windows (connections per minute)</h2><div id="lb"></div><div class="sub" style="font-size:12px;margin:0"><b style="color:var(--lstm)">Purple</b> = actual traffic, <b>grey</b> = what the model expects for this device.</div></div>
+<div class="card" style="--c:#a78bfa;margin-bottom:12px"><h2>2 · LSTM cells read the windows in order, then the decoder rebuilds the sequence</h2><div class="row2" id="lc"></div><div class="sub" style="font-size:12px;margin:0">Each cell keeps a memory (cell state) and uses forget, input and output gates to decide what to keep from earlier windows. Highlight moves along the chain.</div></div>
+<div class="card" style="--c:#f59e0b"><h2>3 · Error becomes temporal risk</h2><div id="lr"></div></div></section>
+
+<section class="view" id="v-gnn"><h1>How the GNN works</h1><p class="sub">The GNN looks at who talks to whom. Each node collects messages from its neighbours, combines them with its own features and decides whether its connections look normal. Pick a node: <select id="gs"></select></p>
+<div class="g2"><div class="card" style="--c:#0891b2"><h2>Communication graph</h2><svg id="gnet" viewBox="0 0 800 450"></svg><div class="sub" style="font-size:12px;margin:0">Node colour = traffic load (blue calm → red high). Bright dashes = messages flowing to the selected node. Red curves = unusual contacts.</div></div>
+<div class="card" style="--c:#06b6d4"><h2>Message passing for <span id="gn"></span></h2><div id="gstep"></div></div></div></section>
+
+<section class="view" id="v-fusion"><h1>Risk fusion</h1><p class="sub">Four signals are combined with fixed weights into one 0–100 score, which decides the response. Pick a node: <select id="fs"></select></p>
+<div class="card" style="--c:#f59e0b" id="fbox"></div></section>
+
+<section class="view" id="v-policy"><h1>Administrator policy</h1><p class="sub">Write a rule in plain English. It is converted to JSON, validated and only activated after you confirm. The language model never controls the network.</p>
+<div class="card" style="--c:#3b82f6"><div class="bar"><input type="text" id="pt" style="flex:1;min-width:240px" value="Isolate any endpoint whose risk exceeds 90."><button class="p" id="bConv">Convert to rule</button></div>
+<div class="bar"><button id="c1">Example: isolate above 90</button><button id="c2">Example: 15 new destinations in 5 min</button><button id="c3">Example: restrict 10 failed logins in 2 min</button></div>
+<div id="pres" class="sub">Pipeline: sentence → language model → JSON rule → validation → your confirmation → policy engine.</div>
+<b>Active rules</b><ul id="rules"></ul></div></section>
+<p class="note">Illustrative browser simulation of the project’s logic (temporal deviation, graph anomaly, weighted fusion 0.35 / 0.35 / 0.15 / 0.15, policy rules, hysteresis response). It does not run the trained PyTorch models, and the policy parser here is rule-based where the project uses an LLM.</p>
+</main></div>
+<script>
+const $=id=>document.getElementById(id),clamp=(x,a,b)=>Math.min(b,Math.max(a,x)),cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const BV=[22,30,15,25,18,27,20,16,24,19,28,17],LN=['Normal','Monitored','Restricted','Isolated'],LV=['--ok','--mon','--res','--iso'];
+let N=6,S=[],LG=[],rules=[],sel=3,tick=0,paused=0,timer,view='sim',pend=null;
+const nm=i=>'h'+(i+1),peer=i=>i%2?i-1:(i+1<N?i+1:-1),oth=i=>[...Array(N).keys()].filter(j=>j!=i),tgt=(i)=>oth(i).slice(0,S[i].extra);
+const P=i=>{const a=(-60+(i+.5)/N*300)*Math.PI/180;return[Math.round(400+290*Math.cos(a)),Math.round(250+150*Math.sin(a))]},HUB=[400,250],SRV=[400,50],hc=i=>`hsl(${Math.round(i*360/N)},70%,55%)`;
+function init(){tick=0;LG=[];S=[...Array(N).keys()].map(i=>({b:BV[i%12],p:0,att:0,stop:0,lv:0,calm:0,risk:3,h:[],ch:[],ex:[],nd:[],fa:[],extra:0,inc:0,L:3,G:0,A:0,T:0,x:0,err:0,r:0,raw:0,conn:BV[i%12]}));
+ sel=Math.min(sel,N-1);build('s','net');build('g','gnet');const o=[...Array(N).keys()].map(i=>`<option value="${i}">${nm(i)}</option>`).join('');['ls','gs','fs','ds'].forEach(k=>$(k).innerHTML=o)}
+function ev(i,t,l){const s=tick*10;LG.unshift(`<div><b>T+${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}</b> ${nm(i)} <span style="color:var(${LV[l]})">${t}</span></div>`);LG.length=Math.min(LG.length,40)}
+function rl(r,i){const s=S[i],n=r.win?Math.max(1,Math.round(r.win*6)):1,sm=a=>a.slice(-n).reduce((x,y)=>x+y,0),v={risk:s.risk,new_destinations:sm(s.nd),failed_auth:sm(s.fa),conn_freq:s.conn}[r.metric];
+ return {'>':v>r.value,'>=':v>=r.value,'<':v<r.value,'<=':v<=r.value}[r.op]?{MONITOR:1,RESTRICT:2,ISOLATE:3,HIGH_RISK:2}[r.action]:null}
+function step(){tick++;
+ S.forEach((s,i)=>{s.p=s.att?Math.min(1,s.p+.02):Math.max(0,s.p-.025);
+  if(s.stop&&tick>=s.stop){s.att=0;s.stop=0;ev(i,'attack traffic stopped (simulation)',0)}
+  const p=s.p,e=s.b*(1+.12*Math.sin(tick/9));s.conn=e*(1+(Math.random()-.5)*.2)*(1+7*p);
+  s.ch.push(s.conn);s.ex.push(e);s.nd.push(p>.25?Math.round(10*p*Math.random()):(Math.random()<.05?1:0));s.fa.push(p>.35?Math.round(18*(p-.35)*Math.random()):(Math.random()<.08?1:0));
+  ['ch','ex','nd','fa'].forEach(k=>{if(s[k].length>70)s[k].shift()});
+  s.extra=p>.2?Math.min(N-1,Math.round(1+4*p),4):0;
+  const a=s.ch.slice(-3),b=s.ex.slice(-3);s.err=a.reduce((t,c,k)=>t+Math.abs(c/b[k]-1),0)/a.length;s.r=s.err/.25;s.L=100*s.r/(s.r+4);
+  s.x=clamp(Math.log(s.conn/e)/2,0,1);s.T=100*s.x;s.A=100*clamp(s.fa.slice(-5).reduce((t,c)=>t+c,0)/12,0,1)});
+ S.forEach(s=>s.inc=0);S.forEach((s,i)=>{if(s.lv<3)tgt(i).forEach(j=>S[j].inc++)});
+ S.forEach((s,i)=>{s.G=Math.min(100,Math.random()*3+100*clamp((s.extra+.25*s.inc)/3,0,1));s.raw=.35*s.L+.35*s.G+.15*s.A+.15*s.T;s.risk=.4*s.risk+.6*s.raw;
+  let w=s.risk<=30?0:s.risk<=60?1:s.risk<=80?2:3;rules.forEach(r=>{const l=rl(r,i);if(l!==null)w=Math.max(w,l)});
+  if(w>=s.lv){if(w>s.lv)ev(i,`risk ${Math.round(s.risk)} → ${LN[w].toUpperCase()}${w==3?' (endpoint isolated)':w==2?' (traffic limited to the server)':''}`,w);s.lv=w;s.calm=0}
+  else{s.calm++;if(s.calm>=6&&s.risk<=[0,30,60,80][s.lv]){s.lv--;s.calm=0;ev(i,`risk ${Math.round(s.risk)} → ${LN[s.lv]}${s.lv==0?' (access restored)':''}`,s.lv)}}
+  s.h.push(s.risk);if(s.h.length>150)s.h.shift()});
+ render()}
+function build(pre,id){let h=`<path class="lk" d="M${HUB}L${SRV}"/>`;
+ for(let i=0;i<N;i++){const[x,y]=P(i);h+=`<path class="lk" d="M${HUB}L${x},${y}"/><path id="${pre}f${i}" class="fl" d="M${x},${y}L${HUB}"/>`;if(peer(i)>i)h+=`<path class="lk pr" d="M${x},${y}L${P(peer(i))}"/>`}
+ for(let i=0;i<N;i++)for(let j=0;j<N;j++)if(i!=j)h+=`<path id="${pre}e${i}_${j}" class="ex" d="M${P(i)}Q${HUB} ${P(j)}"/>`;
+ h+=`<rect x="355" y="26" width="90" height="40" rx="10" fill="var(--pol)"/><text x="400" y="51" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Server</text><rect x="362" y="233" width="76" height="34" rx="9" fill="var(--lstm)"/><text x="400" y="255" text-anchor="middle" fill="#fff" font-size="12">Switch</text>`;
+ for(let i=0;i<N;i++){const[x,y]=P(i);h+=`<g class="nd" data-i="${i}"><circle id="${pre}r${i}" class="ring" cx="${x}" cy="${y}" r="33"/><circle id="${pre}n${i}" class="node" cx="${x}" cy="${y}" r="24"/><text x="${x}" y="${y+5}" text-anchor="middle" fill="#fff" font-weight="700">${nm(i)}</text><text id="${pre}b${i}" class="bd" x="${x}" y="${y+44}"></text></g>`}
+ $(id).innerHTML=h;$(id).onclick=e=>{const g=e.target.closest('[data-i]');if(g){sel=+g.dataset.i;render()}}}
+function upd(pre,mode){const c=LV.map(cv);
+ S.forEach((s,i)=>{const n=$(pre+'n'+i);if(!n)return;const inc=i==sel||peer(i)==sel||tgt(sel).includes(i)||tgt(i).includes(sel);
+  n.setAttribute('fill',mode?`hsl(${Math.round(185-185*s.x)},75%,46%)`:(s.lv==3?cv('--mut'):c[s.lv]));n.setAttribute('stroke',i==sel?cv('--ink'):'none');n.setAttribute('stroke-width',4);
+  $(pre+'r'+i).style.opacity=s.att?1:0;const f=$(pre+'f'+i);
+  if(mode){f.style.stroke=cv('--gnn');f.style.opacity=inc?1:.12;f.style.strokeWidth=inc?4:2}else{f.style.stroke=c[s.lv];f.style.opacity=s.lv==3?0:1;f.style.strokeWidth=clamp(1.5+s.conn/40,2,8)}
+  $(pre+'b'+i).textContent=mode?'':s.lv==3?'✕ isolated':s.lv==2?'limited':'';
+  for(let j=0;j<N;j++)if(j!=i){const e=$(`${pre}e${i}_${j}`),on=s.lv<3&&tgt(i).includes(j);e.style.opacity=on?(mode&&i!=sel&&j!=sel?.15:.9):0}})}
+function chart(){const k=$('cv'),r=devicePixelRatio||1,W=k.clientWidth,Hh=k.clientHeight;k.width=W*r;k.height=Hh*r;const g=k.getContext('2d');g.scale(r,r);
+ [[0,30,'--ok'],[30,60,'--mon'],[60,80,'--res'],[80,100,'--iso']].forEach(([a,b,v])=>{g.globalAlpha=.12;g.fillStyle=cv(v);g.fillRect(0,Hh*(1-b/100),W,Hh*(b-a)/100)});g.globalAlpha=1;
+ g.fillStyle=cv('--mut');g.font='11px sans-serif';[0,30,60,80,100].forEach(v=>g.fillText(v,3,Hh*(1-v/100)-2));
+ S.forEach((s,i)=>{g.beginPath();g.strokeStyle=hc(i);g.lineWidth=i==sel?3:1.2;g.globalAlpha=i==sel?1:.55;s.h.forEach((v,j)=>{const x=W-(s.h.length-1-j)*(W/150),y=Hh*(1-v/100);j?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});g.globalAlpha=1}
+function render(){const s=S[sel],c=LV.map(cv),pill=l=>`<span class="pill" style="color:${c[l]}">${LN[l]}</span>`;
+ $('side').innerHTML=`Selected node<br><b>${nm(sel)}</b> ${pill(s.lv)}<br>Risk ${Math.round(s.risk)}/100<br>Isolated now: ${S.filter(x=>x.lv==3).length} of ${N}`;
+ document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v==view));
+ if(view=='sim'){upd('s',0);$('sn').textContent=nm(sel);$('wn').textContent=nm(sel);$('nv').textContent=N;$('bAtt').textContent=s.att?'Attack in progress':'Attack '+nm(sel);
+  $('tb').innerHTML=S.map((x,i)=>`<tr class="row${i==sel?' sel':''}" data-i="${i}"><td><b style="color:${hc(i)}">${nm(i)}</b></td><td>${Math.round(x.risk)}</td><td><div class="rb"><i style="width:${x.risk}%;background:${c[x.lv]}"></i></div></td><td>${pill(x.lv)}</td></tr>`).join('');
+  document.querySelectorAll('.row').forEach(r=>r.onclick=()=>{sel=+r.dataset.i;render()});
+  const bg=['#6d5dfc','#8b5cf6','#0891b2','#f59e0b',LN[s.lv]=='Normal'?'#16a34a':'#dc2626'];
+  $('flow').innerHTML=[['1 · Telemetry',Math.round(s.conn)+' conn/min'],['2 · LSTM',Math.round(s.L)+'%'],['3 · GNN',Math.round(s.G)+'%'],['4 · Fusion',Math.round(s.risk)+' / 100'],['5 · Response',LN[s.lv]]].map((a,k)=>`<div class="st" style="background:${bg[k]}"><b>${a[0]} (${nm(sel)})</b><span>${a[1]}</span></div>`).join('');
+  const w=[],l6=s.nd.slice(-6).reduce((t,x)=>t+x,0),f6=s.fa.slice(-6).reduce((t,x)=>t+x,0);
+  if(s.conn>2*s.ex.slice(-1)[0])w.push(`Connection rate is ${(s.conn/s.ex.slice(-1)[0]).toFixed(1)}× this device’s normal`);if(s.extra>0)w.push(`Unusual communication relationships: contacting ${s.extra} extra devices`);if(s.inc>0)w.push(`${s.inc} other device(s) are contacting it unusually`);
+  if(l6>3)w.push(`${l6} new destinations in the last minute`);if(f6>3)w.push(`Repeated authentication failures (${f6} in the last minute)`);
+  $('why').innerHTML=w.length?w.map(x=>`<li>${x}</li>`).join(''):`<li style="list-style:none;margin-left:-18px;color:var(--mut)">Behaviour matches the learnt normal for ${nm(sel)}.</li>`;
+  $('log').innerHTML=LG.join('')||'<div style="color:var(--mut)">No events yet. Select a node and press Attack.</div>';const t=tick*10;$('clock').textContent=`Simulated time ${Math.floor(t/60)} min ${t%60} s`;chart()}
+ if(view=='lstm'){$('ls').value=sel;const a=s.ch.slice(-12),e=s.ex.slice(-12),mx=Math.max(...a,...e,1);let b='';
+  a.forEach((v,k)=>{const x=18+k*50,h1=v/mx*120,h2=e[k]/mx*120;b+=`<rect x="${x}" y="${140-h1}" width="18" height="${h1}" rx="3" fill="var(--lstm)"/><rect x="${x+20}" y="${140-h2}" width="18" height="${h2}" rx="3" fill="var(--mut)" opacity=".45"/><text x="${x+19}" y="156" font-size="10" text-anchor="middle" fill="var(--mut)">${k==11?'now':'t-'+(11-k)}</text>`});
+  $('lb').innerHTML=`<svg viewBox="0 0 620 162">${b}</svg>`;
+  $('lc').innerHTML=a.map((v,k)=>`<div class="cell" style="animation-delay:${k*.25}s"><small>${k==11?'x(t)':'x(t-'+(11-k)+')'}</small><b>${Math.round(v)}</b></div>`).join('<i>→</i>')+'<i>→</i><div class="cell enc"><small>encoded state</small><b>z</b></div><i>→</i><div class="cell dec"><small>decoder</small><b>x̂</b></div>';
+  $('lr').innerHTML=`<div class="step"><b style="background:var(--lstm)">a</b><div>Mean gap between actual and expected over the last 3 windows: <b>${(s.err*100).toFixed(0)}%</b></div></div><div class="step"><b style="background:var(--lstm)">b</b><div>Compared with a normal gap of about 25%: r = ${s.err.toFixed(2)} / 0.25 = <b>${s.r.toFixed(1)}</b></div></div><div class="step"><b style="background:var(--lstm)">c</b><div>Temporal risk = 100 × r / (r + 4)</div></div><div class="big" style="color:${c[s.L<=30?0:s.L<=60?1:s.L<=80?2:3]}">${Math.round(s.L)}%</div>`}
+ if(view=='gnn'){$('gs').value=sel;upd('g',1);$('gn').textContent=nm(sel);const nb=[...new Set([...(peer(sel)>=0?[peer(sel)]:[]),...tgt(sel),...oth(sel).filter(j=>S[j].lv<3&&tgt(j).includes(sel))])],m=nb.length?nb.reduce((t,j)=>t+S[j].x,0)/nb.length:0,n=(k,t)=>`<div class="step"><b>${k}</b><div>${t}</div></div>`;
+  $('gstep').innerHTML=n(1,`<b>Own features:</b> traffic load vs its own normal = <b>${s.x.toFixed(2)}</b>`)+n(2,`<b>Messages from neighbours:</b><br>${nb.length?nb.map(j=>`<span class="chip">${nm(j)} · ${S[j].x.toFixed(2)}</span>`).join(''):'<span class="chip">no unusual neighbours</span>'}<span class="chip">server (via switch)</span>`)+n(3,`<b>Aggregate (mean of neighbours):</b> ${m.toFixed(2)}`)+n(4,`<b>Unusual edges:</b> ${s.extra} outgoing, ${s.inc} incoming (this device normally talks only to the server${peer(sel)>=0?' and '+nm(peer(sel)):''})`)+n(5,`<b>Output: graph risk</b><div class="big" style="color:var(--gnn)">${Math.round(s.G)}%</div>`)+'<div class="sub" style="font-size:12px;margin:0">A trained GraphSAGE uses learned weights for steps 1–4. Here the score comes from the same signals: many unusual edges push it towards 100.</div>'}
+ if(view=='fusion'){$('fs').value=sel;const rows=[['LSTM temporal',s.L,.35,'--lstm'],['GNN graph',s.G,.35,'--gnn'],['Authentication',s.A,.15,'--pol'],['Traffic',s.T,.15,'--fus']];
+  $('fbox').innerHTML=rows.map(r=>`<div class="fr"><b>${r[0]}</b><div class="rb" style="height:14px"><i style="width:${r[1]}%;background:var(${r[3]})"></i></div><span>${Math.round(r[1])} × ${r[2]} = <b>${(r[1]*r[2]).toFixed(1)}</b></span></div>`).join('')+
+  `<hr style="border:0;border-top:1px solid var(--line)"><div class="fr"><b>Overall risk</b><div class="rb" style="height:14px"><i style="width:${s.risk}%;background:${c[s.lv]}"></i></div><span><span class="big" style="font-size:26px">${Math.round(s.risk)}</span> ${pill(s.lv)}</span></div><div class="sub" style="font-size:12px;margin:0">Raw sum ${s.raw.toFixed(1)}, lightly smoothed over time. Bands: 0–30 Normal, 31–60 Monitored, 61–80 Restricted, 81–100 Isolated. Active rules can raise the level further. A level steps down only after 6 calm windows.</div>`}
+ if(view=='data'){$('ds').value=sel;const cl=v=>clamp(v,-10,10),zc=z=>`hsl(${z>0?0:210},70%,${100-Math.min(Math.abs(z),6)*8}%)`,C=[['Connections / min',s.conn,Math.log1p(s.b),.1],['New destinations',s.nd.slice(-1)[0]||0,.05,.2],['Failed logins',s.fa.slice(-1)[0]||0,.07,.26]];
+  $('dt').innerHTML='<tr><th>Feature</th><th>1 · Raw value</th><th>2 · log(1+x)</th><th>3 · z-score vs its own normal</th><th>4 · Clipped to ±10</th></tr>'+C.map(([n,v,mu,sd])=>{const l=Math.log1p(v),z=(l-mu)/sd;return `<tr><td>${n}</td><td>${v.toFixed(1)}</td><td>${l.toFixed(2)}</td><td>(${l.toFixed(2)} − ${mu.toFixed(2)}) / ${sd} = <b>${z.toFixed(1)}</b></td><td style="background:${zc(cl(z))};color:#111"><b>${cl(z).toFixed(1)}</b></td></tr>`}).join('');
+  $('dw').innerHTML=s.ch.slice(-12).map((v,k)=>{const z=cl((Math.log1p(v)-Math.log1p(s.b))/.1);return `<div class="cell" style="border-color:transparent;background:${zc(z)};color:#111;animation:none"><small style="color:#333">${k==11?'now':'t-'+(11-k)}</small><b>${z.toFixed(1)}</b></div>`}).join('');
+  $('dp').innerHTML='<tr><th>Device</th><th>Its normal</th><th>Raw value now</th><th>z-score</th></tr>'+S.map((x,i)=>{const z=(Math.log1p(s.conn)-Math.log1p(x.b))/.1;return `<tr${i==sel?' class="sel"':''}><td><b>${nm(i)}</b></td><td>${x.b} / min</td><td>${s.conn.toFixed(0)}</td><td style="background:${zc(cl(z))};color:#111">${cl(z).toFixed(1)}</td></tr>`}).join('')}
+ if(view=='train'&&!$('tl').innerHTML){const TL=[0.871,0.773,0.756,0.74,0.725,0.711,0.697,0.683,0.671,0.661,0.65,0.643,0.636,0.63,0.625,0.62,0.614,0.608,0.602,0.597,0.592,0.588,0.585,0.583,0.58],TG=[0.22294,0.00777,0.00569,0.00245,0.0021,0.00267,0.00179,0.00084,0.00053,0.0005,0.00037,0.00033,0.00027,0.0003,0.00021,0.0002,0.00015,0.0002,0.00012,0.00012,0.00009,0.00008,0.00007,0.00013,0.00017,0.00012,0.00005,0.00003,0.00003,0.00003];
+  const lc=(a,c,lg)=>{const W=520,Hh=190,p=14,f=v=>lg?Math.log10(v):v,mn=Math.min(...a.map(f)),mx=Math.max(...a.map(f)),pts=a.map((v,i)=>`${p+i*(W-2*p)/(a.length-1)},${Hh-26-(f(v)-mn)/(mx-mn)*(Hh-50)}`).join(' ');return `<svg viewBox="0 0 ${W} ${Hh}"><path d="M${p},${Hh-22}H${W-p}" stroke="var(--line)"/><polyline points="${pts}" fill="none" stroke="${c}" stroke-width="3"/><text x="${p}" y="14" font-size="12" fill="var(--mut)">epoch 1: ${a[0].toPrecision(2)}</text><text x="${W-p}" y="${Hh-6}" font-size="12" text-anchor="end" fill="var(--mut)">epoch ${a.length}: ${a[a.length-1].toPrecision(2)}</text></svg>`};
+  $('tl').innerHTML=lc(TL,'#8b5cf6',0);$('tg').innerHTML=lc(TG,'#0891b2',1)}
+ if(view=='policy'){$('rules').innerHTML=rules.length?rules.map((r,i)=>`<li>${r.text} <button data-i="${i}" class="rm" style="padding:0 8px">remove</button></li>`).join(''):'<li style="list-style:none;margin-left:-18px;color:var(--mut)">None yet.</li>';document.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{rules.splice(+b.dataset.i,1);render()})}}
+function parse(t){t=t.toLowerCase();const W={one:1,two:2,three:3,four:4,five:5,six:6,ten:10,fifteen:15,twenty:20,thirty:30},q='(\\d+(?:\\.\\d+)?|'+Object.keys(W).join('|')+')',num=x=>W[x]??parseFloat(x),
+ action=t.includes('isolat')?'ISOLATE':/restrict|block/.test(t)?'RESTRICT':/high.risk/.test(t)?'HIGH_RISK':'MONITOR',metric=t.includes('destination')?'new_destinations':t.includes('fail')?'failed_auth':t.includes('connection')?'conn_freq':'risk',
+ v=t.match(new RegExp('(?:more than|exceeds?|above|over|greater than|>)\\s*'+q));if(!v)throw Error('No threshold found. Try “… exceeds 90” or “… more than 15 …”.');
+ const w=t.match(new RegExp('(?:within|in the last|in|over)\\s*(?:the last\\s*)?'+q+'\\s*minutes?')),r={metric,op:'>',value:num(v[1]),win:w?num(w[1]):null,action};
+ if(r.metric=='risk'&&r.value>100)throw Error('Validation failed: risk must be between 0 and 100.');if(r.win&&r.win>10)throw Error('Validation failed: window is limited to 10 minutes.');return r}
+$('bConv').onclick=()=>{try{pend=parse($('pt').value);pend.text=$('pt').value;$('pres').innerHTML=`<b style="color:var(--ok)">Valid rule.</b> Check it, then confirm:<pre>${JSON.stringify({condition:{metric:pend.metric,operator:pend.op,value:pend.value,time_window_minutes:pend.win},action:pend.action},null,2)}</pre><button class="p" id="bOk">Confirm and activate</button>`;
+ $('bOk').onclick=()=>{rules.push(pend);$('pres').textContent='Rule activated. It is now checked on every window.';render()}}catch(e){$('pres').innerHTML='<b style="color:var(--iso)">Rejected.</b> '+e.message}};
+$('c1').onclick=()=>$('pt').value='Isolate any endpoint whose risk exceeds 90.';$('c2').onclick=()=>$('pt').value='If a device communicates with more than 15 new external destinations within five minutes, classify it as high risk.';$('c3').onclick=()=>$('pt').value='Restrict any device with more than 10 failed logins in 2 minutes.';
+$('bAtt').onclick=()=>{const s=S[sel];if(!s.att){s.att=1;s.stop=0;ev(sel,'attack started (simulation): rising connections, new destinations, failed logins',0)}render()};
+$('bOne').onclick=()=>{const s=S[sel];if(s.att){s.att=0;ev(sel,'attack traffic stopped (simulation)',0)}render()};
+$('bStop').onclick=()=>{S.forEach((s,i)=>{if(s.att){s.att=0;ev(i,'attack traffic stopped (simulation)',0)}});render()};
+$('bDemo').onclick=()=>{rules=[];init();sel=Math.min(3,N-1);const s=S[sel];s.att=1;s.stop=110;ev(sel,'demo started: attack ramps up, then stops after about 18 minutes of simulated time',0);render()};
+$('bPause').onclick=()=>{paused=!paused;$('bPause').textContent=paused?'Resume':'Pause'};$('bReset').onclick=()=>{rules=[];init();render()};
+$('nn').oninput=()=>{N=+$('nn').value;init();render()};
+$('spd').onchange=()=>{clearInterval(timer);timer=setInterval(()=>{if(!paused)step()},+$('spd').value)};
+['ls','gs','fs','ds'].forEach(k=>$(k).onchange=()=>{sel=+$(k).value;render()});
+function route(){const v=location.hash.slice(1);view=['sim','data','train','lstm','gnn','fusion','policy'].includes(v)?v:'sim';document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id=='v-'+view));if(S.length)render()}
+addEventListener('hashchange',route);addEventListener('resize',()=>{if(view=='sim')chart()});
+init();route();for(let i=0;i<40;i++)step();LG=[];render();timer=setInterval(()=>{if(!paused)step()},250);
+</script></body></html>
